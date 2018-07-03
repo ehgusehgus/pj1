@@ -1,14 +1,17 @@
 package com.example.q.pj1;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -24,9 +27,15 @@ public class ImageAdapter extends BaseAdapter {
     private GridView mgridView;
     private ArrayList<String> files = new ArrayList<>();
 
-    public ImageAdapter(Context c, GridView gridView) {
+    public ImageAdapter(Context c, GridView gridView, Activity activity) {
         mContext = c;
         mgridView = gridView;
+
+        if (ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+        }else{
+
         Uri uri = android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = { MediaStore.MediaColumns.DATA, MediaStore.MediaColumns.DISPLAY_NAME };
 
@@ -36,17 +45,16 @@ public class ImageAdapter extends BaseAdapter {
         int columnDisplayname = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DISPLAY_NAME);
 
         int lastIndex;
-        while (cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             String absolutePathOfImage = cursor.getString(columnIndex);
             String nameOfFile = cursor.getString(columnDisplayname);
             lastIndex = absolutePathOfImage.lastIndexOf(nameOfFile);
             lastIndex = lastIndex >= 0 ? lastIndex : nameOfFile.length() - 1;
 
-            if (!TextUtils.isEmpty(absolutePathOfImage))
-            {
+            if (!TextUtils.isEmpty(absolutePathOfImage)) {
                 files.add(absolutePathOfImage);
             }
+        }
         }
 
 

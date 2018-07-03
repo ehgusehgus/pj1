@@ -1,29 +1,20 @@
 package com.example.q.pj1;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
 
 
 public class MainActivity extends AppCompatActivity{
@@ -37,7 +28,10 @@ public class MainActivity extends AppCompatActivity{
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private PageOne pageone;
+    private PageTwo pagetwo;
+    private PageThree pagethree;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -47,11 +41,60 @@ public class MainActivity extends AppCompatActivity{
     //  public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
 
     private static int PERMISSIONS_REQUEST_WRITE_CONTACTS = 1111;
+    int PERMISSION_ALL = 1;
+
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if (requestCode == PERMISSION_ALL) {
+
+            if (grantResults.length > 0) {
+                for (int i = 0; i < permissions.length; i++) {
+
+                    if (permissions[i].equals(Manifest.permission.READ_CONTACTS)) {
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            //PageOne pg1 = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                            pageone.initDataset();
+
+                        }
+                    } else if (permissions[i].equals(Manifest.permission.WRITE_CONTACTS)) {
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+
+                        }
+                    } else if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                            //PageTwo pg2 = (PageTwo) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+                            pagetwo.setimageadpater();
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //permission 확인하고 requeset
+
+        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission. READ_EXTERNAL_STORAGE};
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
@@ -80,6 +123,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+//onrequestPermissionresult(){ fragrment findfragmentbyID ().initDataset
 
     public void makePopUp(){
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
@@ -114,11 +158,14 @@ public class MainActivity extends AppCompatActivity{
                 ft.add(R.id.page_fragment, pageone);
                 ft.commit();
                 return pageone;*/
-                return PageOne.newInstance();
+                pageone = PageOne.newInstance();
+                return pageone;
 
             }
-            else if (position == 1)
-                return PageTwo.newInstance();
+            else if (position == 1) {
+                pagetwo = PageTwo.newInstance();
+                return pagetwo;
+            }
             else
                 return PageThree.newInstance();
 

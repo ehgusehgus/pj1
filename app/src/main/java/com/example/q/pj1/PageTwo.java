@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +28,10 @@ public class PageTwo extends Fragment {
 //    public void onActivityCreated(Bundle savedInstanceState) {
 //        super.onActivityCreated(savedInstanceState);
 //    }
+
+    private View view ;
+    private GridView gridView;
+    private ImageAdapter ia;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -47,51 +53,52 @@ public class PageTwo extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        if (ContextCompat.checkSelfPermission(this.getActivity(),
-                Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+//        if (ContextCompat.checkSelfPermission(this.getActivity(),
+//                Manifest.permission.READ_EXTERNAL_STORAGE)
+//                != PackageManager.PERMISSION_GRANTED) {
+//
+//            requestPermissions(
+//                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+//                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+//            }
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-            } else {
-
-                ActivityCompat.requestPermissions(this.getActivity(),
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-            }
-        }
-
-        View view = inflater.inflate(R.layout.fragment_page_two,container,false);
-        GridView gridView = (GridView) view.findViewById(R.id.gridview);
-        final ImageAdapter ia = new ImageAdapter(view.getContext(),gridView);
-        gridView.setAdapter(ia); // uses the view to get the context instead of getActivity().
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            public void onItemClick(AdapterView parent, View v, int position, long id){
-                ia.callImageViewer(position);
-            }
-        });
-
+        view = inflater.inflate(R.layout.fragment_page_two,container,false);
+        gridView = (GridView) view.findViewById(R.id.gridview);
+        setimageadpater();
         return view;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    ia = new ImageAdapter(view.getContext(),gridView, this.getActivity());
+                    gridView.setAdapter(ia);
+                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+                        public void onItemClick(AdapterView parent, View v, int position, long id){
+                            ia.callImageViewer(position);
+                        }
+                    });
                 } else {
 
                 }
                 return;
         }
     }
-}
 
+    public void setimageadpater() {
+        ia = new ImageAdapter(view.getContext(), gridView, this.getActivity());
+        gridView.setAdapter(ia);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                ia.callImageViewer(position);
+            }
+        });
+    }
+}
