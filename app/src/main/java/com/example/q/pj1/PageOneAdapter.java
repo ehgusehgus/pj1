@@ -27,7 +27,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHolder> {
-   // private ArrayList<AddressData> mDataset;
+    // private ArrayList<AddressData> mDataset;
 
     private JSONArray mAddressBook;
 
@@ -79,7 +79,7 @@ public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHold
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public PageOneAdapter(JSONArray jarray) {
-       // mDataset = myDataset;
+        // mDataset = myDataset;
         mAddressBook = jarray;
         return;
     }
@@ -117,16 +117,16 @@ public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHold
 
         try {
             if(mAddressBook.getJSONObject(position).get("phoneNo") != null){
-                    holder.mPhoneView.setText(mAddressBook.getJSONObject(position).get("phoneNo").toString());
-                }
+                holder.mPhoneView.setText(mAddressBook.getJSONObject(position).get("phoneNo").toString());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         try {
             if(mAddressBook.getJSONObject(position).get("email") != null) {
-                    holder.mEmailView.setText(mAddressBook.getJSONObject(position).get("email").toString());
-                }
+                holder.mEmailView.setText(mAddressBook.getJSONObject(position).get("email").toString());
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

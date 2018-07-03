@@ -12,7 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
@@ -46,7 +48,9 @@ public class PageOne extends Fragment {
     private static final int PERMISSIONS_REQUEST_WRITE_CONTACTS = 5;
 
     //private FloatingActionButton mFloat;
+    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
 
+    private static final int REQUEST_READ_CONTACTS = 11;
 
     public static PageOne newInstance() {
         Bundle args = new Bundle();
@@ -60,6 +64,8 @@ public class PageOne extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
+        //checkPermission();
         initDataset();
 
         //setContentView(R.layout.);
@@ -74,6 +80,7 @@ public class PageOne extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_one, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
+        Log.d("addressBook", "onCreateView");
         mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -83,7 +90,7 @@ public class PageOne extends Fragment {
         mRecyclerView.setAdapter(mAdapter);
 
         //mFloat = view.findViewById(R.id.floatingButton);
-       // mFloat.setOnClickListener(this);
+        // mFloat.setOnClickListener(this);
 
         return view;
     }
@@ -100,74 +107,93 @@ public class PageOne extends Fragment {
     }
 */
 
-    private void initDataset() {
+
+
+    public void initDataset() {
 
         //mMyData = new ArrayList<AddressData>();
 
+        //addressBook = new JSONArray();
+
+        Log.d("initDataset", "start!!!!!!");
         addressBook = new JSONArray();
 
 
-         try{
-            // Android version is lesser than 6.0 or the permission is already granted.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
+            Log.d("initDataset", "request permission");
 
-            ContentResolver cr = getContext().getContentResolver();
-            Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                    null, null, null, null);
+            requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+        }else
+            try {
+                // Android version is lesser than 6.0 or the permission is already granted.
+                Log.d("initDataset", "read contacts");
 
-           if ((cur != null ? cur.getCount() : 0) > 0) {
-                while (cur != null && cur.moveToNext()) {
-                    String id = cur.getString(
-                            cur.getColumnIndex(ContactsContract.Contacts._ID));
-                    String name = cur.getString(cur.getColumnIndex(
-                            ContactsContract.Contacts.DISPLAY_NAME));
+                ContentResolver cr = getContext().getContentResolver();
+                Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                        null, null, null, null);
 
-                    int photo_id = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                    String photo_base64 = queryContactImage(photo_id);
+                if ((cur != null ? cur.getCount() : 0) > 0) {
+                    while (cur != null && cur.moveToNext()) {
+                        String id = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts._ID));
+                        String name = cur.getString(cur.getColumnIndex(
+                                ContactsContract.Contacts.DISPLAY_NAME));
 
-                    String email = null;
-                    Cursor ce = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
-                    if (ce != null && ce.moveToFirst()) {
-                        email = ce.getString(ce.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                        ce.close();
-                    }
-                    //Log.d("Get email", email);
+                        int photo_id = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
+                        String photo_base64 = queryContactImage(photo_id);
+
+                        String email = null;
+                        Cursor ce = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
+                        if (ce != null && ce.moveToFirst()) {
+                            email = ce.getString(ce.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                            ce.close();
+                        }
+                        //Log.d("Get email", email);
 
 
-                    if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                        Cursor pCur = cr.query(
-                                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                                new String[]{id}, null);
-                        while (pCur.moveToNext()) {
-                            String phoneNo = pCur.getString(pCur.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
+                            Cursor pCur = cr.query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                    null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+                                    new String[]{id}, null);
+                            while (pCur.moveToNext()) {
+                                String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                        ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                             /*Log.i(TAG, "Name: " + name);
                             Log.i(TAG, "Phone Number: " + phoneNo);
                             mMyData.add(new AddressData(photo_base64, name, phoneNo, email));*/
 
-                            JSONObject person_info = new JSONObject();
-                            person_info.put("name", name);
-                            person_info.put("phoneNo", phoneNo);
-                            person_info.put("email", email);
-                            person_info.put("photo", photo_base64);
+                                JSONObject person_info = new JSONObject();
+                                person_info.put("name", name);
+                                person_info.put("phoneNo", phoneNo);
+                                person_info.put("email", email);
+                                person_info.put("photo", photo_base64);
 
-                            addressBook.put(person_info);
+                                addressBook.put(person_info);
 
+                            }
+                            pCur.close();
                         }
-                        pCur.close();
                     }
                 }
-            }
 
-            if (cur != null) {
-                cur.close();
+                if (cur != null) {
+                    cur.close();
+                }
+
+                //  Fragment frag = this;
+
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.detach(this);
+                ft.attach(this);
+                ft.commit();
+
+            } catch (JSONException e) {
+                System.out.print("json exception");
             }
-        }catch(JSONException e){
-            System.out.print("json exception");
-        }
 
         String jsonSt = addressBook.toString();
         Log.d("Print", "printing addressbook");
@@ -175,31 +201,35 @@ public class PageOne extends Fragment {
 
 
     }
-/*
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
-        int[] grantResults) {
-            if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission is granted
-                      initDataset();
+                                           int[] grantResults) {
 
-                } else {
+        Log.d("onRequestPermission", "hi");
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-                    //Toast.makeText(this, "Until you grant the permission, we canot display the names", Toast.LENGTH_SHORT).show();
-                }
-            }else if(requestCode == PERMISSIONS_REQUEST_WRITE_CONTACTS) {
-            if (grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
+                Log.d("onRequestPermission", "hi2");
+
                 initDataset();
 
             } else {
-                Log.d("kk", "qqqq");
-                //Toast.makeText("Until you grant the permission, we canot display anything", Toast.LENGTH_SHORT).show();
+                Log.d("onRequestPermission", "hi3");
+
+                Toast.makeText(getActivity(), "Until you grant the permission, we cannot display the names", Toast.LENGTH_SHORT).show();
             }
         }
+        else {
+            Log.d("kk", "qqqq");
+            //Toast.makeText("Until you grant the permission, we canot display anything", Toast.LENGTH_SHORT).show();
+        }
     }
-*/
+
+
     private String queryContactImage(int imageDataRow) {
         Cursor c = getContext().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Photo.PHOTO},
@@ -221,6 +251,6 @@ public class PageOne extends Fragment {
             return null;
         }
     }
+
+
 }
-
-

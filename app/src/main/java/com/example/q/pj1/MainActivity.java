@@ -26,7 +26,7 @@ import android.view.ViewGroup;
 
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity{
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -44,8 +44,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewPager mViewPager;
     private FloatingActionButton mFloat;
 
-    public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
+    //  public  static final int PERMISSIONS_MULTIPLE_REQUEST = 123;
 
+    private static int PERMISSIONS_REQUEST_WRITE_CONTACTS = 1111;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +65,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         mFloat = findViewById(R.id.floatingButton);
-        mFloat.setOnClickListener(this);
+        //  mFloat.setOnClickListener(this);
 
-        checkPermission();
+        mFloat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                makePopUp();
+            }
+        });
+
+        //checkPermission();
 
 
     }
 
-    public void onClick(View v) {
+
+    public void makePopUp(){
         FragmentTransaction trans = getSupportFragmentManager().beginTransaction();
         Add_Contact fragment1 = new Add_Contact();
         trans.add(R.id.popup_frag, fragment1, "addContact");
@@ -80,9 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         trans.commit();
     }
-
-
-
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -101,8 +108,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //return PlaceholderFragment.newInstance(position + 1);
 
-            if (position == 0)
+            if (position == 0){
+               /* FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                PageOne pageone = PageOne.newInstance();
+                ft.add(R.id.page_fragment, pageone);
+                ft.commit();
+                return pageone;*/
                 return PageOne.newInstance();
+
+            }
             else if (position == 1)
                 return PageTwo.newInstance();
             else
@@ -118,74 +132,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    public void pageOne_Update(){
+        PageOne pageone = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+        Log.v("mainactivity", "aa");
 
+        if(pageone == null)
+            Log.v("mainactivity", "null");
 
+        pageone.initDataset();
 
-
-    private void checkPermission() {
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.READ_CONTACTS) + ContextCompat
-                .checkSelfPermission(this,
-                        Manifest.permission.WRITE_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale
-                    (this, Manifest.permission.READ_CONTACTS) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale
-                            (this, Manifest.permission.WRITE_CONTACTS)) {
-
-                Snackbar.make(this.findViewById(android.R.id.content),
-                        "Please Grant Permissions to upload profile photo",
-                        Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                requestPermissions(
-                                        new String[]{Manifest.permission
-                                                .READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
-                                        PERMISSIONS_MULTIPLE_REQUEST);
-                            }
-                        }).show();
-            } else {
-                requestPermissions(
-                        new String[]{Manifest.permission
-                                .READ_CONTACTS, Manifest.permission.WRITE_CONTACTS},
-                        PERMISSIONS_MULTIPLE_REQUEST);
-            }
-        } else {
-            // write your logic code if permission already granted
-        }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions,  int[] grantResults) {
 
-        switch (requestCode) {
-            case PERMISSIONS_MULTIPLE_REQUEST:
-                if (grantResults.length > 0) {
-                    boolean writePermission = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    boolean readPermission = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-
-                    if(writePermission && readPermission)
-                    {
-                        // write your logic here
-                    } else {
-                        Snackbar.make(this.findViewById(android.R.id.content),
-                                "Please Grant Permissions to upload profile photo",
-                                Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
-                                new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        requestPermissions(
-                                                new String[]{Manifest.permission
-                                                        .READ_CONTACTS, Manifest.permission.CAMERA},
-                                                PERMISSIONS_MULTIPLE_REQUEST);
-                                    }
-                                }).show();
-                    }
-                }
-                break;
-        }
-    }
 }

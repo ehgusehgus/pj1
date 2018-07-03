@@ -1,8 +1,10 @@
 package com.example.q.pj1;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +12,7 @@ import android.app.Fragment;
 import android.provider.ContactsContract;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +27,12 @@ public class Add_Contact extends android.support.v4.app.Fragment {
     TextView mName;
     TextView mPhone;
     TextView mEmail;
-    Button bCancle;
+    Button bCancel;
     Button bAdd;
 
+    MainActivity mHostActivity;
+
+    private static int PERMISSIONS_REQUEST_WRITE_CONTACTS =11;
 
     public Add_Contact() {
         // Required empty public constructor
@@ -47,20 +53,34 @@ public class Add_Contact extends android.support.v4.app.Fragment {
     }
 
     @Override
+    public void onAttach( Activity activity ) {
+        super.onAttach( activity );
+        mHostActivity = (MainActivity)activity;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add__contact, container, false);
 
+        if ( ContextCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            Log.d("initDataset", "request permission");
+
+            requestPermissions( new String[]{android.Manifest.permission.WRITE_CONTACTS}, PERMISSIONS_REQUEST_WRITE_CONTACTS);
+        }
+
         mName = view.findViewById(R.id.name);
         mPhone = view.findViewById(R.id.phone);
         mEmail = view.findViewById(R.id.email);
-        bCancle = view.findViewById(R.id.cancel);
+        bCancel = view.findViewById(R.id.cancel);
         bAdd = view.findViewById(R.id.add);
+
 
         view.setBackgroundColor(Color.DKGRAY);
 
-        bCancle.setOnClickListener(new View.OnClickListener() {
+
+        bCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removePopUp(view);
@@ -86,7 +106,15 @@ public class Add_Contact extends android.support.v4.app.Fragment {
                 String phoneNumber = mPhone.getText().toString();
                 insertContactPhoneNumber (addContactsUri, rowContactId, phoneNumber);
 
+                String email = mEmail.getText().toString();
+                insertContactEmail(addContactsUri, rowContactId, email);
+
                 removePopUp(view);
+
+                //PageOne pageone = (PageOne) getFragmentManager().findFragmentById(R.id.frameLayout);
+                //pageone.initDataset();
+                mHostActivity.pageOne_Update();
+
 
             }});
 
@@ -95,22 +123,9 @@ public class Add_Contact extends android.support.v4.app.Fragment {
         return view;
 
     }
-/*
-    public void onClick(View v) {
-        int id = v.getId();
 
-        switch (id) {
-            case R.id.cancel:   //should add disabling button when there is no input
-                Log.d("cccc", "click");
-                removePopUp(v);
-                break;
 
-            case R.id.add:
-                Log.d("aaaa", "click");
-                removePopUp(v);
-                break;
-        }
-    }*/
+
 
     public void removePopUp(View v){
         FragmentManager fragmanager =  getFragmentManager();
@@ -164,16 +179,6 @@ public class Add_Contact extends android.support.v4.app.Fragment {
         // Calculate phone type by user selection.
         int phoneContactType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
 
-       /*if("home".equalsIgnoreCase(phoneTypeStr))
-        {
-            phoneContactType = ContactsContract.CommonDataKinds.Phone.TYPE_HOME;
-        }else if("mobile".equalsIgnoreCase(phoneTypeStr))
-        {
-            phoneContactType = ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE;
-        }else if("work".equalsIgnoreCase(phoneTypeStr))
-        {
-            phoneContactType = ContactsContract.CommonDataKinds.Phone.TYPE_WORK;
-        }*/
         // Put phone type value.
         contentValues.put(ContactsContract.CommonDataKinds.Phone.TYPE, phoneContactType);
 
@@ -181,5 +186,51 @@ public class Add_Contact extends android.support.v4.app.Fragment {
         getActivity().getContentResolver().insert(addContactsUri, contentValues);
 
     }
+
+    private void insertContactEmail(Uri addContactsUri, long rawContactId, String email)
+    {
+        // Create a ContentValues object.
+        ContentValues contentValues = new ContentValues();
+
+        // Each contact must has an id to avoid java.lang.IllegalArgumentException: raw_contact_id is required error.
+        contentValues.put(ContactsContract.Data.RAW_CONTACT_ID, rawContactId);
+
+        // Each contact must has an mime type to avoid java.lang.IllegalArgumentException: mimetype is required error.
+        contentValues.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE);
+
+        // Put phone number value.
+        contentValues.put(ContactsContract.CommonDataKinds.Email.DATA, email);
+
+        // Insert new contact data into phone contact list.
+        getActivity().getContentResolver().insert(addContactsUri, contentValues);
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+
+        Log.d("onRequestPermission", "hi");
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSIONS_REQUEST_WRITE_CONTACTS) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                Log.d("onRequestPermission", "hi2");
+
+                //bAdd.setClickable(true);
+
+            } else {
+                Log.d("onRequestPermission", "hi3");
+
+                // Toast.makeText(getActivity(), "Until you grant the permission, we cannot display the names", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Log.d("kk", "qqqq");
+            //Toast.makeText("Until you grant the permission, we canot display anything", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 }
