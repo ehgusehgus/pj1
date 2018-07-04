@@ -32,7 +32,7 @@ public class PageTwo extends Fragment {
 //    }
 
     private View view ;
-    private GridView gridView;
+    private GridView gridView ;
     public ImageAdapter ia;
     /**
      * Use this factory method to create a new instance of
@@ -49,6 +49,7 @@ public class PageTwo extends Fragment {
         //args.putString(ARG_PARAM1, param1);
         //args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+        Log.d("!!!!!!", "newInstance: " + fragment.toString());
         return fragment;
     }
 
@@ -68,7 +69,9 @@ public class PageTwo extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_page_two,container,false);
         gridView = (GridView) view.findViewById(R.id.gridview);
+        Log.v("shitshit", gridView+"");
         setimageadpater(view.getContext(), this.getActivity());
+        Log.d("shitshit", "shitshit2");
        /* ia = new ImageAdapter(this.getContext(), gridView, this.getActivity());
         gridView.setAdapter(ia);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,30 +83,39 @@ public class PageTwo extends Fragment {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (gridView != null) {
-                        ia = new ImageAdapter(view.getContext(), gridView, this.getActivity());
-                        gridView.setAdapter(ia);
-                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                                ia.callImageViewer(position);
-                            }
-                        });
-                    }
-                } else {
-
-                }
-                return;
-        }
+    public void onResume(){
+        Log.d("??????","??????");
+        Log.d("!!!!!!", "onResume: " + this.toString());
+        Log.v("shitshit", gridView+"");
+        super.onResume();
     }
 
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String permissions[], int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                    if (gridView != null) {
+//                        ia = new ImageAdapter(view.getContext(), gridView, this.getActivity());
+//                        gridView.setAdapter(ia);
+//                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            public void onItemClick(AdapterView parent, View v, int position, long id) {
+//                                ia.callImageViewer(position);
+//                            }
+//                        });
+//                    }
+//                } else {
+//
+//                }
+//                return;
+//        }
+//    }
+
     public void setimageadpater(Context context, Activity activity) {
+        Log.d("!!!!!!", "setImageAdapter: " + this.toString());
+        Log.v("shitshit", gridView+"");
         if (gridView != null) {
             ia = new ImageAdapter(context, gridView, activity);
             gridView.setAdapter(ia);
@@ -112,6 +124,8 @@ public class PageTwo extends Fragment {
                     ia.callImageViewer(position);
                 }
             });
+            Log.d("shitshit", "shitshit");
         }
+        return;
     }
 }

@@ -29,8 +29,8 @@ public class MainActivity extends AppCompatActivity{
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    private PageOne pageone;
-    private PageTwo pagetwo;
+    private PageOne pageone ;
+    private PageTwo pagetwo ;
     private PageThree pagethree;
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -68,13 +68,11 @@ public class MainActivity extends AppCompatActivity{
                             pageone.initDataset(this, this);
 
                         }
-                    } else if (permissions[i].equals(Manifest.permission.WRITE_CONTACTS)) {
-                        if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-
-                        }
                     } else if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                             //PageTwo pg2 = (PageTwo) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
+
+                            Log.d("pageone!!", pagetwo+"");
                             pagetwo.setimageadpater(this, this);
                             //pagetwo.ia = new ImageAdapter(this, this);
                         }
@@ -91,16 +89,17 @@ public class MainActivity extends AppCompatActivity{
 
         //permission 확인하고 requeset
 
+
         pageone = PageOne.newInstance();
         pagetwo = PageTwo.newInstance();
 
+        Log.d("pageone!!", pagetwo+"");
 
-        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission. READ_EXTERNAL_STORAGE};
+        String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission. READ_EXTERNAL_STORAGE};
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
-
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -114,7 +113,6 @@ public class MainActivity extends AppCompatActivity{
 
         mFloat = findViewById(R.id.floatingButton);
         //  mFloat.setOnClickListener(this);
-
         mFloat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,12 +121,22 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
-
         //checkPermission();
 
-
+    }
+    @Override
+    protected  void onStop(){
+        super.onStop();
     }
 
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+    }
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+    }
 //onrequestPermissionresult(){ fragrment findfragmentbyID ().initDataset
 
     public void makePopUp(){
