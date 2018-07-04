@@ -1,20 +1,17 @@
 package com.example.q.pj1;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +31,7 @@ public class PageTwo extends Fragment {
     private View view ;
     private GridView gridView ;
     public ImageAdapter ia;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -69,8 +67,18 @@ public class PageTwo extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_page_two,container,false);
         gridView = (GridView) view.findViewById(R.id.gridview);
-        Log.v("shitshit", gridView+"");
         setimageadpater(view.getContext(), this.getActivity());
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeToRefresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                setimageadpater(view.getContext(), PageTwo.this.getActivity());
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
+
         Log.d("shitshit", "shitshit2");
        /* ia = new ImageAdapter(this.getContext(), gridView, this.getActivity());
         gridView.setAdapter(ia);
@@ -114,8 +122,6 @@ public class PageTwo extends Fragment {
 //    }
 
     public void setimageadpater(Context context, Activity activity) {
-        Log.d("!!!!!!", "setImageAdapter: " + this.toString());
-        Log.v("shitshit", gridView+"");
         if (gridView != null) {
             ia = new ImageAdapter(context, gridView, activity);
             gridView.setAdapter(ia);

@@ -4,18 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
 
-public class ImagePopup extends AppCompatActivity implements View.OnClickListener {
+import com.liuguangqiang.swipeback.SwipeBackActivity;
+
+public class ImagePopup extends AppCompatActivity {
 
     private Context mContext = null;
     private final int imgWidth = 320;
     private final int imgHeight = 372;
     private ViewPager mViewPager;
     private CustomAdapter adapter2;
-
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,15 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
         mViewPager = (ViewPager) findViewById(R.id.container2);
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(index);
-
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh2);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mSwipeRefreshLayout.setRefreshing(false);
+                finish();
+            }
+        });
 //        //mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
@@ -51,18 +60,18 @@ public class ImagePopup extends AppCompatActivity implements View.OnClickListene
 //        iv.setImageBitmap(bm);
 //        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         /** 리스트로 가기 버튼 */
-        Button btn = (Button)findViewById(R.id.button);
-        btn.setOnClickListener(this);
+        //Button btn = (Button)findViewById(R.id.button);
+        //btn.setOnClickListener(this);
 
     }
     /* (non-Javadoc)
      * @see android.view.View.OnClickListener#onClick(android.view.View)
      */
-    public void onClick(View v) {
-        switch(v.getId()){
-            case R.id.button:
-                finish();
-        }
-    }
+//    public void onClick(View v) {
+//        switch(v.getId()){
+//            case R.id.button:
+//                finish();
+//        }
+//    }
 
 }
