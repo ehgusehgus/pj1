@@ -31,6 +31,7 @@ public class ImageAdapter extends BaseAdapter {
         mContext = c;
         mgridView = gridView;
 
+
         if (ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {

@@ -1,8 +1,10 @@
 package com.example.q.pj1;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 
@@ -55,7 +57,7 @@ public class PageOne extends Fragment {
     public static PageOne newInstance() {
         Bundle args = new Bundle();
         PageOne fragment = new PageOne();
-
+        //fragment.addressBook = new JSONArray();
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +68,9 @@ public class PageOne extends Fragment {
         super.onCreate(savedInstanceState);
 
         //checkPermission();
-        initDataset();
+        initDataset(this.getContext(),this.getActivity());
+        //addressBook = new JSONArray();
+
 
         //setContentView(R.layout.);
 
@@ -85,6 +89,8 @@ public class PageOne extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+       // addressBook = new JSONArray();
 
         mAdapter = new PageOneAdapter(addressBook);
         mRecyclerView.setAdapter(mAdapter);
@@ -109,26 +115,25 @@ public class PageOne extends Fragment {
 
 
 
-    public void initDataset() {
+    public void initDataset(Context context, Activity activity) {
 
         //mMyData = new ArrayList<AddressData>();
 
-        //addressBook = new JSONArray();
-
-        Log.d("initDataset", "start!!!!!!");
         addressBook = new JSONArray();
 
+        Log.d("initDataset", "start!!!!!!");
+        //addressBook = new JSONArray();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this.getActivity(), android.Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
             Log.d("initDataset", "request permission");
 
-            //requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-        }else
+
             try {
                 // Android version is lesser than 6.0 or the permission is already granted.
                 Log.d("initDataset", "read contacts");
 
-                ContentResolver cr = getContext().getContentResolver();
+                ContentResolver cr = context.getContentResolver();
                 Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                         null, null, null, null);
 
@@ -140,7 +145,7 @@ public class PageOne extends Fragment {
                                 ContactsContract.Contacts.DISPLAY_NAME));
 
                         int photo_id = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
-                        String photo_base64 = queryContactImage(photo_id);
+                        String photo_base64 = queryContactImage(photo_id, context);
 
                         String email = null;
                         Cursor ce = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
@@ -185,24 +190,29 @@ public class PageOne extends Fragment {
                 }
 
                 //  Fragment frag = this;
+                String jsonSt = addressBook.toString();
+                Log.d("Print11", "printing addressbook");
+                Log.d("addressBook11", jsonSt);
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.detach(this);
-                ft.attach(this);
-                ft.commit();
+                if(getFragmentManager() != null) {
 
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.detach(this);
+                    ft.attach(this);
+                    ft.commit();
+                }
             } catch (JSONException e) {
                 System.out.print("json exception");
             }
 
-        String jsonSt = addressBook.toString();
-        Log.d("Print", "printing addressbook");
-        Log.d("addressBook", jsonSt);
+            String jsonSt = addressBook.toString();
+            Log.d("Print", "printing addressbook");
+            Log.d("addressBook", jsonSt);
 
-
+        }
     }
 
-
+/*
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions,
                                            int[] grantResults) {
@@ -229,9 +239,9 @@ public class PageOne extends Fragment {
         }
     }
 
-
-    private String queryContactImage(int imageDataRow) {
-        Cursor c = getContext().getContentResolver().query(ContactsContract.Data.CONTENT_URI,
+*/
+    private String queryContactImage(int imageDataRow, Context context) {
+        Cursor c =context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Photo.PHOTO},
                 ContactsContract.Data._ID + "=?",
                 new String[] {Integer.toString(imageDataRow)},

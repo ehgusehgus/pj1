@@ -1,6 +1,8 @@
 package com.example.q.pj1;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -31,7 +33,7 @@ public class PageTwo extends Fragment {
 
     private View view ;
     private GridView gridView;
-    private ImageAdapter ia;
+    public ImageAdapter ia;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -66,7 +68,14 @@ public class PageTwo extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_page_two,container,false);
         gridView = (GridView) view.findViewById(R.id.gridview);
-        setimageadpater();
+        setimageadpater(view.getContext(), this.getActivity());
+       /* ia = new ImageAdapter(this.getContext(), gridView, this.getActivity());
+        gridView.setAdapter(ia);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                ia.callImageViewer(position);
+            }
+        });*/
         return view;
     }
 
@@ -78,13 +87,15 @@ public class PageTwo extends Fragment {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    ia = new ImageAdapter(view.getContext(),gridView, this.getActivity());
-                    gridView.setAdapter(ia);
-                    gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-                        public void onItemClick(AdapterView parent, View v, int position, long id){
-                            ia.callImageViewer(position);
-                        }
-                    });
+                    if (gridView != null) {
+                        ia = new ImageAdapter(view.getContext(), gridView, this.getActivity());
+                        gridView.setAdapter(ia);
+                        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                                ia.callImageViewer(position);
+                            }
+                        });
+                    }
                 } else {
 
                 }
@@ -92,13 +103,15 @@ public class PageTwo extends Fragment {
         }
     }
 
-    public void setimageadpater() {
-        ia = new ImageAdapter(view.getContext(), gridView, this.getActivity());
-        gridView.setAdapter(ia);
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView parent, View v, int position, long id) {
-                ia.callImageViewer(position);
-            }
-        });
+    public void setimageadpater(Context context, Activity activity) {
+        if (gridView != null) {
+            ia = new ImageAdapter(context, gridView, activity);
+            gridView.setAdapter(ia);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView parent, View v, int position, long id) {
+                    ia.callImageViewer(position);
+                }
+            });
+        }
     }
 }

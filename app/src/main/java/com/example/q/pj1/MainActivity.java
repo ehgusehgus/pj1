@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity{
 
             if (grantResults.length > 0) {
                 for (int i = 0; i < permissions.length; i++) {
-
+//TODO:문제있음
                     if (permissions[i].equals(Manifest.permission.READ_CONTACTS)) {
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                             //PageOne pg1 = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-                            pageone.initDataset();
+                            pageone.initDataset(this, this);
 
                         }
                     } else if (permissions[i].equals(Manifest.permission.WRITE_CONTACTS)) {
@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity{
                     } else if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                             //PageTwo pg2 = (PageTwo) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-                            pagetwo.setimageadpater();
+                            pagetwo.setimageadpater(this, this);
+                            //pagetwo.ia = new ImageAdapter(this, this);
                         }
                     }
                 }
@@ -89,6 +90,10 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
 
         //permission 확인하고 requeset
+
+        pageone = PageOne.newInstance();
+        pagetwo = PageTwo.newInstance();
+
 
         String[] PERMISSIONS = {Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS, Manifest.permission. READ_EXTERNAL_STORAGE};
 
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity{
                 makePopUp();
             }
         });
+
 
         //checkPermission();
 
@@ -158,12 +164,13 @@ public class MainActivity extends AppCompatActivity{
                 ft.add(R.id.page_fragment, pageone);
                 ft.commit();
                 return pageone;*/
-                pageone = PageOne.newInstance();
+                //pageone = PageOne.newInstance();
+                Log.d("fffffff","pageone instance");
                 return pageone;
 
             }
             else if (position == 1) {
-                pagetwo = PageTwo.newInstance();
+                //pagetwo = PageTwo.newInstance();
                 return pagetwo;
             }
             else
@@ -186,7 +193,7 @@ public class MainActivity extends AppCompatActivity{
         if(pageone == null)
             Log.v("mainactivity", "null");
 
-        pageone.initDataset();
+        pageone.initDataset(this, this);
 
     }
 
