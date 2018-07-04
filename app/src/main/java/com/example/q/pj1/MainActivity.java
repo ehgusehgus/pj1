@@ -2,19 +2,32 @@ package com.example.q.pj1;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.PixelCopy;
 import android.view.View;
+
 
 
 public class MainActivity extends AppCompatActivity{
@@ -32,6 +45,11 @@ public class MainActivity extends AppCompatActivity{
     private PageOne pageone ;
     private PageTwo pagetwo ;
     private PageThree pagethree;
+
+    private PointerDrawable pointer = new PointerDrawable();
+    private boolean isTracking;
+    private boolean isHitting;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -92,6 +110,7 @@ public class MainActivity extends AppCompatActivity{
 
         pageone = PageOne.newInstance();
         pagetwo = PageTwo.newInstance();
+        pagethree = PageThree.newInstance();
 
         Log.d("pageone!!", pagetwo+"");
 
@@ -100,30 +119,66 @@ public class MainActivity extends AppCompatActivity{
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tabLayout.getSelectedTabPosition()){
+                    case 0:
+                        mFloat.show();
+                        break;
+                    case 1:
+                    case 2:
+                        mFloat.hide();
+                        break;
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        //TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
 
         mFloat = findViewById(R.id.floatingButton);
         //  mFloat.setOnClickListener(this);
+
+
+
         mFloat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                makePopUp();
+               // if(tabLayout.getSelectedTabPosition() == 0)
+                    makePopUp();
             }
         });
+
+
 
         //checkPermission();
 
     }
+
     @Override
     protected  void onStop(){
         super.onStop();
@@ -182,7 +237,7 @@ public class MainActivity extends AppCompatActivity{
                 return pagetwo;
             }
             else
-                return PageThree.newInstance();
+                return pagethree;
 
         }
 
@@ -207,3 +262,5 @@ public class MainActivity extends AppCompatActivity{
 
 
 }
+
+
