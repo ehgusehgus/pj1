@@ -10,48 +10,74 @@
         android:id="@+id/name_view"
         android:layout_width="291dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="76dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="11dp"
+        android:text="no name"
         android:textAlignment="viewStart"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="no name"        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/phoneNum_view"
-        android:layout_width="149dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="76dp"
+        android:layout_width="102dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="11dp"
+        android:layout_marginStart="3dp"
         android:clickable="true"
         android:text="no phone number"
         android:textAlignment="viewStart"
-        android:textSize="14sp"
+        android:textSize="13sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/phone" />
 
     <TextView
         android:id="@+id/email_view"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="134dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="11dp"
+        android:layout_marginStart="3dp"
         android:text="no email"
         android:textAlignment="viewStart"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/email" />
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_image"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="50dp"
-        android:src="@mipmap/ic_launcher_round"
+        android:layout_width="49dp"
+        android:layout_height="53dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/contact_icon"
         app:civ_border_color="#FF000000"
-        app:civ_border_width="2dp"    />
+        app:civ_border_width="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <ImageView
+        android:id="@+id/phone"
+        android:layout_width="19dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="13dp"
+        android:layout_marginStart="68dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/phone_icon" />
+
+    <ImageView
+        android:id="@+id/email"
+        android:layout_width="19dp"
+        android:layout_height="19dp"
+        android:layout_marginBottom="11dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/phoneNum_view"
+        app:srcCompat="@drawable/email_icon" />
 
 
 </android.support.constraint.ConstraintLayout>

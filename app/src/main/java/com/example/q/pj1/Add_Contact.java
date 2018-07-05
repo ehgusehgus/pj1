@@ -102,8 +102,7 @@ public class Add_Contact extends android.support.v4.app.Fragment {
                 // Below uri can avoid java.lang.UnsupportedOperationException: URI: content://com.android.contacts/data/phones error.
                 Uri addContactsUri = ContactsContract.Data.CONTENT_URI;
 
-                // Add an empty contact and get the generated id.
-                long rowContactId = getRawContactId();
+
 
                 // Add contact name data.
                 String inputName = mName.getText().toString();
@@ -117,8 +116,12 @@ public class Add_Contact extends android.support.v4.app.Fragment {
                 String inputEmail = mEmail.getText().toString();
                 String email = (inputEmail.equals("")) ? null : inputEmail;
 
-
+                Log.d("add button", inputName +","+ inputPhone +","+ inputEmail);
                 if(name != null && (phone != null || email != null)){
+                    Log.d("add button", "add!!");
+                    // Add an empty contact and get the generated id.
+                    long rowContactId = getRawContactId();
+
                     insertContactDisplayName(addContactsUri, rowContactId, name);
 
                     if(phone != null)

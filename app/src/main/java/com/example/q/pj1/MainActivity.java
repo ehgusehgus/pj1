@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    public void pageOne_Update() {
+    public void pageOne_Update() {  //TODO:error viewpager current item
         PageOne pageone = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
         Log.v("mainactivity", "aa");
 

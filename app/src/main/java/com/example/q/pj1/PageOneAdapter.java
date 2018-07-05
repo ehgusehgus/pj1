@@ -100,7 +100,7 @@ public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHold
 
                 ContentResolver cr = context.getContentResolver();
                 Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                        null, null, null, null);
+                        null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
 
                 Log.d("print full query", "" + cur.getCount());
 
@@ -208,7 +208,7 @@ public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHold
                 holder.mCircleView.setImageBitmap(BitmapFactory.decodeByteArray(image, 0, image.length));
             }
             else
-                holder.mCircleView.setImageResource(R.mipmap.ic_launcher_round);
+                holder.mCircleView.setImageResource(R.drawable.contact_icon);
 
 
             if(person.has("name"))
@@ -220,7 +220,7 @@ public class PageOneAdapter extends RecyclerView.Adapter<PageOneAdapter.ViewHold
             if(person.has("phoneNo"))
                 holder.mPhoneView.setText(person.get("phoneNo").toString());
             else
-                holder.mPhoneView.setText("no phone number");
+                holder.mPhoneView.setText("no phone");
 
 
             if(person.has("email"))
