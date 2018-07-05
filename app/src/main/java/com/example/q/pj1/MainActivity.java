@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity{
                     if (permissions[i].equals(Manifest.permission.READ_CONTACTS)) {
                         if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
                             //PageOne pg1 = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
-                            pageone.initDataset(this, this);
+                            //pageone.initDataset(this, this);
+                            pageOne_Update();
 
                         }
                     } else if (permissions[i].equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
@@ -249,18 +250,22 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
-    public void pageOne_Update(){
+    public void pageOne_Update() {
         PageOne pageone = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
         Log.v("mainactivity", "aa");
 
-        if(pageone == null)
+        if (pageone == null)
             Log.v("mainactivity", "null");
 
-        pageone.initDataset(this, this);
+        //pageone.initDataset(this, this);
+        // if(pageone.getFragmentManager() != null) {
+        FragmentTransaction ft = pageone.getFragmentManager().beginTransaction();
+        ft.detach(pageone);
+        ft.attach(pageone);
+        ft.commit();
+
 
     }
-
-
 }
 
 

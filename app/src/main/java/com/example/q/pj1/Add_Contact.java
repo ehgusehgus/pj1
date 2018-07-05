@@ -17,9 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 
 
 public class Add_Contact extends android.support.v4.app.Fragment {
@@ -84,6 +85,12 @@ public class Add_Contact extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View view) {
                 removePopUp(view);
+
+
+                if (view != null) {
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                }
             }
         });
 
@@ -99,21 +106,44 @@ public class Add_Contact extends android.support.v4.app.Fragment {
                 long rowContactId = getRawContactId();
 
                 // Add contact name data.
-                String displayName = mName.getText().toString();
-                insertContactDisplayName(addContactsUri, rowContactId, displayName);
+                String inputName = mName.getText().toString();
+                String name = (inputName.equals("")) ? null : inputName;
 
                 // Add contact phone data.
-                String phoneNumber = mPhone.getText().toString();
-                insertContactPhoneNumber (addContactsUri, rowContactId, phoneNumber);
+                String inputPhone = mPhone.getText().toString();
+                String phone = (inputPhone.equals("")) ? null : inputPhone;
 
-                String email = mEmail.getText().toString();
-                insertContactEmail(addContactsUri, rowContactId, email);
 
-                removePopUp(view);
+                String inputEmail = mEmail.getText().toString();
+                String email = (inputEmail.equals("")) ? null : inputEmail;
+
+
+                if(name != null && (phone != null || email != null)){
+                    insertContactDisplayName(addContactsUri, rowContactId, name);
+
+                    if(phone != null)
+                        insertContactPhoneNumber (addContactsUri, rowContactId, phone);
+
+                    if(email != null)
+                         insertContactEmail (addContactsUri, rowContactId, inputEmail);
+
+                    removePopUp(view);
+                    mHostActivity.pageOne_Update();
+                }
+                else{
+                    Context context = getContext();
+                    CharSequence text = "You should add info : \n[Name && (PhoneNo || Email)]";
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+
+                //removePopUp(view);
 
                 //PageOne pageone = (PageOne) getFragmentManager().findFragmentById(R.id.frameLayout);
                 //pageone.initDataset();
-                mHostActivity.pageOne_Update();
+                //mHostActivity.pageOne_Update();
 
 
             }});

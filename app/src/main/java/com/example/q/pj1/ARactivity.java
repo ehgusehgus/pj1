@@ -278,6 +278,8 @@ public class ARactivity extends AppCompatActivity {
                     toast.show();
                     return;
                 }
+                galleryAddPic(filename);
+
                 Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
                         "Photo saved", Snackbar.LENGTH_LONG);
                 snackbar.setAction("Open in Photos", v -> {
@@ -300,6 +302,15 @@ public class ARactivity extends AppCompatActivity {
             }
             handlerThread.quitSafely();
         }, new Handler(handlerThread.getLooper()));
+    }
+
+
+    private void galleryAddPic(String photoPath) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(photoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        this.sendBroadcast(mediaScanIntent);
     }
 }
 

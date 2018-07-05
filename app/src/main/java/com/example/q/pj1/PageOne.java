@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 
@@ -44,7 +45,7 @@ public class PageOne extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     //private ArrayList<AddressData> mMyData;
-    private JSONArray addressBook;
+    private JSONArray Book;
 
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     private static final int PERMISSIONS_REQUEST_WRITE_CONTACTS = 5;
@@ -57,7 +58,7 @@ public class PageOne extends Fragment {
     public static PageOne newInstance() {
         Bundle args = new Bundle();
         PageOne fragment = new PageOne();
-        //fragment.addressBook = new JSONArray();
+        //fragment.Book = new JSONArray();
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,8 +69,8 @@ public class PageOne extends Fragment {
         super.onCreate(savedInstanceState);
 
         //checkPermission();
-        initDataset(this.getContext(),this.getActivity());
-        //addressBook = new JSONArray();
+        //initDataset(this.getContext(),this.getActivity());
+        //Book = new JSONArray();
 
 
         //setContentView(R.layout.);
@@ -84,15 +85,15 @@ public class PageOne extends Fragment {
         View view = inflater.inflate(R.layout.fragment_page_one, container, false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
-        Log.d("addressBook", "onCreateView");
+        Log.d("Book", "onCreateView");
         mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-       // addressBook = new JSONArray();
+       // Book = new JSONArray();
 
-        mAdapter = new PageOneAdapter(addressBook);
+        mAdapter = new PageOneAdapter(this.getContext(), this.getActivity());
         mRecyclerView.setAdapter(mAdapter);
 
         //mFloat = view.findViewById(R.id.floatingButton);
@@ -114,15 +115,15 @@ public class PageOne extends Fragment {
 */
 
 
-
+/*
     public void initDataset(Context context, Activity activity) {
 
         //mMyData = new ArrayList<AddressData>();
 
-        addressBook = new JSONArray();
+        Book = new JSONArray();
 
         Log.d("initDataset", "start!!!!!!");
-        //addressBook = new JSONArray();
+        //Book = new JSONArray();
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(activity, android.Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED) {
@@ -137,12 +138,16 @@ public class PageOne extends Fragment {
                 Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                         null, null, null, null);
 
+                Log.d("print full query", "" + cur.getCount());
+
+
                 if ((cur != null ? cur.getCount() : 0) > 0) {
                     while (cur != null && cur.moveToNext()) {
                         String id = cur.getString(
                                 cur.getColumnIndex(ContactsContract.Contacts._ID));
-                        String name = cur.getString(cur.getColumnIndex(
-                                ContactsContract.Contacts.DISPLAY_NAME));
+                        String name = cur.getString(
+                               cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
 
                         int photo_id = cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID));
                         String photo_base64 = queryContactImage(photo_id, context);
@@ -156,7 +161,7 @@ public class PageOne extends Fragment {
                         }
                         //Log.d("Get email", email);
 
-
+                        String phoneNo = null;
                         if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
                             Cursor pCur = cr.query(
                                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -164,24 +169,20 @@ public class PageOne extends Fragment {
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
                                     new String[]{id}, null);
                             while (pCur.moveToNext()) {
-                                String phoneNo = pCur.getString(pCur.getColumnIndex(
+                                phoneNo = pCur.getString(pCur.getColumnIndex(
                                         ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                            /*Log.i(TAG, "Name: " + name);
-                            Log.i(TAG, "Phone Number: " + phoneNo);
-                            mMyData.add(new AddressData(photo_base64, name, phoneNo, email));*/
-
-                                JSONObject person_info = new JSONObject();
-                                person_info.put("name", name);
-                                person_info.put("phoneNo", phoneNo);
-                                person_info.put("email", email);
-                                person_info.put("photo", photo_base64);
-
-                                addressBook.put(person_info);
-
                             }
                             pCur.close();
                         }
+
+                        JSONObject person_info = new JSONObject();
+                        person_info.put("name", name);
+                        person_info.put("phoneNo", phoneNo);
+                        person_info.put("email", email);
+                        person_info.put("photo", photo_base64);
+
+                        Book.put(person_info);
+                        Log.d("addressBoot", person_info.toString());
                     }
                 }
 
@@ -190,12 +191,28 @@ public class PageOne extends Fragment {
                 }
 
                 //  Fragment frag = this;
-                String jsonSt = addressBook.toString();
-                Log.d("Print11", "printing addressbook");
-                Log.d("addressBook11", jsonSt);
+                String jsonSt = Book.toString();
+                Log.d("Print11", "printing Book");
+                Log.d("Book11", jsonSt);
+                Log.d("Book11", "" + Book.length());
 
-                if(getFragmentManager() != null) {
+               /* for(int i = 0; i < Book.length(); i++){
+                    Log.d("Book access get", Book.get(i).toString());
+                }
 
+                for(int i = 0; i < Book.length(); i++){
+                    if(Book.getJSONObject(i).get("name") == null)
+                        Log.d("Book11 name : ", "null") ;
+                    else
+                      Log.d("Book11 name : ", "" + Book.getJSONObject(i).get("name").toString());
+
+                }
+/*
+                for(int i = 0; i < Book.length(); i++){
+                    Log.d("Book11 name2 : ", "" + Book.get(i).toString());
+
+                }*/
+     /*           if(getFragmentManager() != null) {
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     ft.detach(this);
                     ft.attach(this);
@@ -205,41 +222,14 @@ public class PageOne extends Fragment {
                 System.out.print("json exception");
             }
 
-            String jsonSt = addressBook.toString();
-            Log.d("Print", "printing addressbook");
-            Log.d("addressBook", jsonSt);
+            String jsonSt = Book.toString();
+            Log.d("Print", "printing Book");
+            Log.d("Book", jsonSt);
 
         }
     }
-
-/*
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-
-        Log.d("onRequestPermission", "hi");
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                Log.d("onRequestPermission", "hi2");
-
-                initDataset();
-
-            } else {
-                Log.d("onRequestPermission", "hi3");
-
-                Toast.makeText(getActivity(), "Until you grant the permission, we cannot display the names", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else {
-            Log.d("kk", "qqqq");
-            //Toast.makeText("Until you grant the permission, we canot display anything", Toast.LENGTH_SHORT).show();
-        }
-    }
-
 */
+/*
     private String queryContactImage(int imageDataRow, Context context) {
         Cursor c =context.getContentResolver().query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Photo.PHOTO},
@@ -261,6 +251,23 @@ public class PageOne extends Fragment {
             return null;
         }
     }
+
+
+
+    public void setOneAdapter(Context context, Activity activity) {
+        /*if (gridView != null) {
+            ia = new ImageAdapter(context, gridView, activity);
+            gridView.setAdapter(ia);
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                public void onItemClick(AdapterView parent, View v, int position, long id) {
+                    ia.callImageViewer(position);
+                }
+            });
+            Log.d("shitshit", "shitshit");
+        }
+        return;*/
+
+        //mAdapter = new PageOneAdapter(context, activity);
 
 
 }
