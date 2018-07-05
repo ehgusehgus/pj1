@@ -2,30 +2,19 @@ package com.example.q.pj1;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.PixelCopy;
 import android.view.View;
 
 
@@ -160,7 +149,16 @@ public class MainActivity extends AppCompatActivity{
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+        tabLayout.setBackgroundColor(Color.GRAY);
+        //tabLayout.setupWithViewPager(mViewPager);
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            if(i==0)
+                tabLayout.getTabAt(i).setIcon(R.drawable.phonebook);
+            if(i==1)
+                tabLayout.getTabAt(i).setIcon(R.drawable.gallery);
+            if(i==2)
+                tabLayout.getTabAt(i).setIcon(R.drawable.ar);
+        }
         mFloat = findViewById(R.id.floatingButton);
         //  mFloat.setOnClickListener(this);
 
