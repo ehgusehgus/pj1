@@ -1,5 +1,6 @@
 package com.example.q.pj1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -8,11 +9,12 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,6 +71,24 @@ public class CustomAdapter extends PagerAdapter {
         TouchImageView imageView = (TouchImageView) itemView.findViewById(R.id.imageView3);
         imageView.setBackgroundColor(0xff000000);
         imageView.setPadding(8, 8, 8, 8);
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Activity) mContext).finish();
+            }
+        });
+//        imageView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+//            @Override
+//            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+//                Log.d("fuck2",Integer.toString(i));
+//                Log.d("fuck2",Integer.toString(i1));
+//                Log.d("fuck2",Integer.toString(i));
+//                    Log.d("fuck2",Integer.toString(i));
+//                    //((Activity) mContext).finish();
+//            }
+//        });
+
 
         File imgFile = new  File(files.get(position));
         if(imgFile.exists()) {

@@ -2,12 +2,15 @@ package com.example.q.pj1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-
-import com.liuguangqiang.swipeback.SwipeBackActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class ImagePopup extends AppCompatActivity {
 
@@ -36,15 +39,26 @@ public class ImagePopup extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container2);
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(index);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh2);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+        mViewPager.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                mSwipeRefreshLayout.setRefreshing(false);
-                finish();
+            public void onClick(View view) {
+                Log.d("fuck","fuck");
+                Toast.makeText(mContext, "File name", Toast.LENGTH_SHORT).show();
+                return ;
             }
         });
+
+//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh2);
+//        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
+//        mSwipeRefreshLayout.setDistanceToTriggerSync(150);
+//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                mSwipeRefreshLayout.setRefreshing(false);
+//                finish();
+//            }
+//        });
 //        //mViewPager.setAdapter(mSectionsPagerAdapter);
 
 
@@ -60,14 +74,22 @@ public class ImagePopup extends AppCompatActivity {
 //        iv.setImageBitmap(bm);
 //        iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         /** 리스트로 가기 버튼 */
-        //Button btn = (Button)findViewById(R.id.button);
-        //btn.setOnClickListener(this);
+//        Button btn = (Button)findViewById(R.id.button2);
+//        btn.setBackgroundColor((Color.TRANSPARENT));
+//        btn.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                Log.d("fuck","fuck");
+//                Toast.makeText(mContext, "File name", Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
 
     }
     /* (non-Javadoc)
      * @see android.view.View.OnClickListener#onClick(android.view.View)
      */
-//    public void onClick(View v) {
+//    public void onLongClick(View v) {
 //        switch(v.getId()){
 //            case R.id.button:
 //                finish();
