@@ -16,7 +16,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-
+import android.view.Window;
+import android.view.WindowManager;
 
 
 public class MainActivity extends AppCompatActivity{
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity{
                             //PageTwo pg2 = (PageTwo) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
 
                             Log.d("pageone!!", pagetwo+"");
+
                             pagetwo.setimageadpater(this, this);
                             //pagetwo.ia = new ImageAdapter(this, this);
                         }
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        savedInstanceState = null;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -144,9 +147,7 @@ public class MainActivity extends AppCompatActivity{
         });
 
         //TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
-
-
+        
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
         tabLayout.setBackgroundColor(Color.GRAY);
@@ -177,6 +178,11 @@ public class MainActivity extends AppCompatActivity{
         //checkPermission();
 
     }
+    @Override
+    protected void onStart(){
+
+        super.onStart();
+    }
 
     @Override
     protected  void onStop(){
@@ -184,8 +190,8 @@ public class MainActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onRestart(){
-        super.onRestart();
+    protected void onResume(){
+        super.onResume();
     }
     @Override
     protected void onDestroy(){
@@ -249,6 +255,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     public void pageOne_Update() {  //TODO:error viewpager current item
+
         PageOne pageone = (PageOne) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.container + ":" + mViewPager.getCurrentItem());
         Log.v("mainactivity", "aa");
 

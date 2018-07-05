@@ -26,6 +26,7 @@ public class ImagePopup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_popup);
         mContext = this;
+
         CustomAdapter adapter= new CustomAdapter(this);
         adapter2 = adapter;
         //mSectionsPagerAdapter = new ImagePopup.SectionsPagerAdapter(getSupportFragmentManager());
@@ -40,14 +41,14 @@ public class ImagePopup extends AppCompatActivity {
         mViewPager.setAdapter(adapter);
         mViewPager.setCurrentItem(index);
 
-        mViewPager.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("fuck","fuck");
-                Toast.makeText(mContext, "File name", Toast.LENGTH_SHORT).show();
-                return ;
-            }
-        });
+//        mViewPager.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("fuck","fuck");
+//                Toast.makeText(mContext, "File name", Toast.LENGTH_SHORT).show();
+//                return ;
+//            }
+//        });
 
 //        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeToRefresh2);
 //        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
